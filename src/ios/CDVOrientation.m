@@ -81,11 +81,13 @@
             if (value != nil) {
                 _isLocked = true;
                 if (@available(iOS 16.0, *)) {
-                    #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_15_5 // Xcode 14 and iOS 16, or greater
+                    if ([self.viewController respondsToSelector:@selector(setNeedsUpdateOfSupportedInterfaceOrientations)]) {
                         [self.viewController setNeedsUpdateOfSupportedInterfaceOrientations];
-                    #endif
+                    } else {
+                        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+                    }
                 } else {
-                    [UINavigationController attemptRotationToDeviceOrientation];
+                    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
                 }
             } else {
                 _isLocked = false;
